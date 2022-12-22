@@ -1,31 +1,55 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 
-function App() {
-  const [counter, setValue] = useState(0);
-  const [keyword, setKeyword] = useState("");
-  const onClick = () => setValue((prev) => prev + 1);
-  const onChange = (event) => setKeyword(event.target.value);
-  useEffect(() => {
-    console.log("I run only once.")
-  }, []);
-  useEffect(() => {
-    console.log("I run when 'keyword' changes.");
-  }, [keyword]);
-  useEffect(() => {
-    console.log("I run when 'counter' changes.");
-  }, [counter]);
+function Converter(props) {
+
+  const [dol, setDol] = useState(0);
+  const onChange = (event) => { setDol(event.target.value) };
   return (
     <div>
-      <input
-        value={keyword}
+      <input 
         onChange={onChange}
-        type="text"
-        placeholder="Search here..."
+        id = "dollars"
+        placeholder = "Input Your Dollars"
+        type = "number"
       />
-      <h1>{counter}</h1>
-      <button onClick={onClick}>click me</button>
+      <h4>{dol/(props.coinPrice)} {props.coinSymbol}</h4>
     </div>
   );
 }
+
+function App() {
+  const [loading, setLoading] = useState(true);
+  const [coins, setCoins] = useState([]);
+  useEffect(() => {
+    fetch("https://api.coinpaprika.com/v1/tickers")
+      .then((response) => response.json())
+      .then((json) => {
+        setCoins(json);
+        setLoading(false);
+      });
+  }, []);
+
+  const [nowCoin, setNowCoin] = useState("Bitcoin");
+  const onChange = (event) => setNowCoin(event.target.value);
+  
+  return (
+    <div>
+      <h1>Coin Top {coins.length}</h1>
+      {loading ? <strong>Loading...</strong> : (
+        <div>
+          <select value={nowCoin} onChange={onChange}>
+            {coins.map((coin) => (
+              <option value={coin.name}>{coin.name} ({coin.symbol}) </option>
+            ))}
+          </select>
+          <hr />
+          {coins.map((coin) => (
+            ( coin.name === nowCoin ? <Converter coinSymbol = {coin.symbol} coinPrice={coin.quotes.USD.price} /> : null )
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}// {coin.quotes.USD.price}
 
 export default App;
