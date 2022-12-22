@@ -1,56 +1,16 @@
-import { useState, useEffect } from "react";
-
-function Converter(props) {
-
-  const [dol, setDol] = useState(0);
-  const onChange = (event) => { setDol(event.target.value) };
-  return (
-    <div>
-      <h4>{(props.coinPrice)}$ = 1{props.coinSymbol}</h4>
-      <input 
-        onChange={onChange}
-        id = "dollars"
-        placeholder = "Input Your Dollars"
-        type = "number"
-      />
-      <h4>{dol/(props.coinPrice)} {props.coinSymbol}</h4>
-    </div>
-  );
-}
+import { BrowserRouter as Router, Routes, Route, } from "react-router-dom";
+import Home from "./routes/Home";
+import Detail from "./routes/Detail";
 
 function App() {
-  const [loading, setLoading] = useState(true);
-  const [coins, setCoins] = useState([]);
-  useEffect(() => {
-    fetch("https://api.coinpaprika.com/v1/tickers")
-      .then((response) => response.json())
-      .then((json) => {
-        setCoins(json);
-        setLoading(false);
-      });
-  }, []);
-
-  const [nowCoin, setNowCoin] = useState("Bitcoin");
-  const onChange = (event) => setNowCoin(event.target.value);
-  
-  return (
-    <div>
-      <h1>Coin Top {coins.length}</h1>
-      {loading ? <strong>Loading...</strong> : (
-        <div>
-          <select value={nowCoin} onChange={onChange}>
-            {coins.map((coin) => (
-              <option value={coin.name}>{coin.name} ({coin.symbol}) </option>
-            ))}
-          </select>
-          <hr />
-          {coins.map((coin) => (
-            ( coin.name === nowCoin ? <Converter coinSymbol = {coin.symbol} coinPrice={coin.quotes.USD.price} /> : null )
-          ))}
-        </div>
-      )}
-    </div>
-  );
+   return (
+    <Router>
+      <Routes>
+        <Route path="/movie/:id" element={<Detail />}/>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </Router>
+   );
 }
 
 export default App;
