@@ -32,7 +32,6 @@ function Detail(){
                 <h4><a href={movie.url}>Go Watch Movie!!</a></h4>
             </div>
         }
-        
     </div>
     );
 }
