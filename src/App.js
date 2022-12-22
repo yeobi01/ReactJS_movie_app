@@ -6,6 +6,7 @@ function Converter(props) {
   const onChange = (event) => { setDol(event.target.value) };
   return (
     <div>
+      <h4>{(props.coinPrice)}$ {props.coinSymbol}</h4>
       <input 
         onChange={onChange}
         id = "dollars"
@@ -50,6 +51,6 @@ function App() {
       )}
     </div>
   );
-}// {coin.quotes.USD.price}
+}
 
 export default App;
